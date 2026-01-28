@@ -1,11 +1,12 @@
 const std = @import("std");
 const zig_serial = @import("serial");
 
-pub fn main() !u8 {
-    var iterator = try zig_serial.list_info();
-    defer iterator.deinit();
+pub fn main(init: std.process.Init) !u8 {
+    const io = init.io;
+    var iterator = try zig_serial.list_info(io);
+    defer iterator.deinit(io);
 
-    while (try iterator.next()) |info| {
+    while (try iterator.next(io)) |info| {
         std.debug.print("\nPort name: {s}\n", .{info.port_name});
         std.debug.print(" - System location: {s}\n", .{info.system_location});
         std.debug.print(" - Friendly name: {s}\n", .{info.friendly_name});
